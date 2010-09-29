@@ -1,0 +1,7 @@
+argparse
+django==1.2.3
+flup
+pylint>=0.21.2
+Pyro==3.10
+setproctitle
+sphinx>=1.0

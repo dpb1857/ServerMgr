@@ -1,0 +1,9 @@
+docs/_build
+*.pyc
+*~
+MANIFEST
+build
+dist
+download
+pylint.log
+python

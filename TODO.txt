@@ -1,0 +1,4 @@
+* put something more in the readme file;
+* ? Configure the entire manager in the __init__ call;
+* Add delared dependencies;
+  
