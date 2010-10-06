@@ -1,4 +1,6 @@
 * put something more in the readme file;
 * ? Configure the entire manager in the __init__ call;
 * Add delared dependencies;
-  
+* Include sample programs in the documentation;
+* Add example of launching pyro nameserver, then pyro service,then using it;
+* Add a beefier Django example;

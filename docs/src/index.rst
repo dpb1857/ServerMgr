@@ -14,11 +14,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   base
-   nginx
-   postgres
-   django_app
-   pyro
+   managers
+   examples
+   changelog
 
 Indices and tables
 ==================

@@ -1,7 +1,7 @@
-Pyro
-====
+Pyro_ns
+=======
 
-.. automodule:: servermgr.pyro
+.. automodule:: servermgr.pyro_ns
 
 Classes
 -------
@@ -11,6 +11,6 @@ Classes
    :inherited-members:
 
 Running pyro.py
----------------------
+---------------
 
 .. autofunction:: main

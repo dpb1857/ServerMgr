@@ -125,7 +125,7 @@ class _ConfigBuilder(object):
                       "port"   : self.port
                       }
 
-        for key in "etc", "logdir", "rundir", "tmpdir", "root":
+        for key in "etc", "logdir", "rundir", "tmpdir":
             dirname = tmpl_vars[key]
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
@@ -147,6 +147,9 @@ class _ConfigBuilder(object):
         :param directory: directory name
         :type destination: string
         """
+
+        if not directory.endswith("/"):
+            directory += "/"
 
         d__ = dict(url_prefix=url_prefix, directory=directory)
         self.mappings.append((_ConfigBuilder.FILESYSTEM_BLOCK, d__))
@@ -192,7 +195,7 @@ class _ConfigBuilder(object):
         self.mappings.append((_ConfigBuilder.HTTP_PROXY_BLOCK, d__))
 
 
-class Manager(base.ManagerBase, _ConfigBuilder):
+class Manager(base.Manager, _ConfigBuilder):
     """
     Nginx manager object.
 
@@ -212,7 +215,7 @@ class Manager(base.ManagerBase, _ConfigBuilder):
             http_root = base_dir
 
         # super(Manager, self).__init__("Nginx", *args, **kwargs)
-        base.ManagerBase.__init__(self, "Nginx", *args, **kwargs)
+        base.Manager.__init__(self, "Nginx", *args, **kwargs)
         _ConfigBuilder.__init__(self, host, port, base_dir, http_root)
 
         self.process = None
@@ -252,7 +255,6 @@ class Manager(base.ManagerBase, _ConfigBuilder):
                                         stdout=file("/dev/null"), 
                                         stderr=subprocess.PIPE,
                                         close_fds=True)
-
         if wait:
             self.ready_wait(timeout=timeout)
 

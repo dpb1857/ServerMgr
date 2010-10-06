@@ -39,7 +39,7 @@ def main():
 
     signal.signal(signal.SIGINT, interrupt)
     
-    django_server = django_app.Manager("localhost", FCGI_PORT, "hello.settings", name="Hello Server")
+    django_server = django_app.Manager("localhost", FCGI_PORT, "hello.settings", process_name="Sample Django App: Hello Server")
     django_server.start()
     print >> sys.stderr, "Starting django app..."
 

@@ -9,9 +9,12 @@ default: help
 # Rules to build a python virtual environment that contains the modules
 # needed to build the documentation and run the examples.
 
-python/bin/python:
+download:
+	mkdir download
+
+python/bin/python: download
 	virtualenv python
-	rm -f distribute-*.tar.gz
+	mv distribute-*.tar.gz download
 
 packages:
 	pip install --requirement=requirements.txt --download-cache=download
@@ -42,6 +45,7 @@ docs:
 
 dist: docs
 	python setup.py sdist
+	cd docs/_build/html && zip -r $(shell pwd)/dist/docs.zip .
 
 #
 # Install the module;
@@ -61,8 +65,9 @@ help:
 	@echo "Type 'make python' to build a local virtualenv python."
 	@echo "Type 'make pylint' to run pylint on the module."
 	@echo "Type 'make docs' to build the documentation."
-	@echo "Type 'make dist' to build the distribution."
 	@echo "Type 'make install' to install the servermgr module."
+	@echo "Type 'make check' to run some pre-distribution checks."
+	@echo "Type 'make dist' to build the distribution."
 	@echo 
 
 
@@ -76,6 +81,8 @@ clean:
 	rm -f pylint.log
 
 check:
+	-grep -n pdb servermgr/*.py
+	-find docs/src examples servermgr tests -type f -print |xargs grep -n XXX
 
 distclean: clean
 	rm -rf python

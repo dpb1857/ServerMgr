@@ -8,16 +8,28 @@ Django process management.
 Use this module to run a django app.
 """
 
+import multiprocessing
 import os
 import socket
-import subprocess
 import sys
 
 import base
 import my_setproctitle
 
 
-class Manager(base.ManagerBase):
+def get_module_directory(module_name):
+    """Find the filesystem directory where a module lives."""
+
+    try:
+        __import__(module_name)
+        app_dir = os.path.dirname(sys.modules[module_name].__file__)
+        return app_dir
+    except ImportError, ex:
+        print >> sys.stderr, ex
+        print >> sys.stderr, "Cannot find settings module " + module_name
+        sys.exit(1)
+
+class Manager(base.Manager):
     """
     Django manager object.
 
@@ -31,15 +43,15 @@ class Manager(base.ManagerBase):
 
     __implements__ = base.ManagerInterface
 
-    def __init__(self, host, port, settings, **kwargs):
+    def __init__(self, host, port, settings, name="DjangoApp", process_name=None, **kwargs):
 
-        name = kwargs.get("name", "DjangoApp")
-        process_name = kwargs.get("process_name", None)
-        super(Manager, self).__init__(name, process_name=process_name)
+        super(Manager, self).__init__(name=name, **kwargs)
 
         self.host = host
         self.port = port
         self.settings = settings
+        self.settings_dir = get_module_directory(settings)
+        self.process_name = process_name
 
     def health(self):
         """
@@ -63,60 +75,37 @@ class Manager(base.ManagerBase):
         :raises: **base.WorkerError** if the worker hasn't started before timeout elapses.
         """
 
-        launch_prog = '\n'.join(
-            ["""from servermgr import django_app;"""
-             """django_app.Manager.launch(host="%s", port=%d, process_name="%s", settings="%s")"""
-             ]) % (self.host, self.port, self.process_name, self.settings)
+        def launch_django():
+            "The Django subprocess."
 
-        self.process = subprocess.Popen(["python", "-c", launch_prog])
+            if self.process_name:
+                my_setproctitle.setproctitle(self.process_name)
+
+            sys.path.insert(0, self.settings_dir)
+            os.environ["DJANGO_SETTINGS_MODULE"] = self.settings
+            from django.core.management.commands import runfcgi
+            cmd = runfcgi.Command()
+
+            # XXX We should allow configuration of the options below;
+            cmd.handle("host="+self.host,
+                       "port="+str(self.port),
+                       "method=prefork",
+                       "daemonize=False",
+                       "maxchildren=2",
+                       "maxspare=2")
+            
+        process = multiprocessing.Process(target=launch_django)
+        process.start()
+        self.process = process        
+
         if wait:
             self.ready_wait(timeout=timeout)
-
-    @staticmethod
-    def launch(**kwargs):
-        """
-        Launch a django app in a fresh python environment.
-
-        :param host:   the fcgi listener interface
-        :param port:   the fcgi listener port
-        :type port: int
-        :param process_name: the displayed program name;
-        :settings:     the django settings module name;
-        """
-
-        settings = kwargs.get("settings")
-
-        pname = kwargs.get("process_name", None)
-        if pname:
-            my_setproctitle.setproctitle(pname)
-
-        os.environ["DJANGO_SETTINGS_MODULE"] = settings
-
-        from django.core.management.commands import runfcgi
-        cmd = runfcgi.Command()
-        cmd.handle("host="+kwargs["host"],
-                   "port="+str(kwargs["port"]),
-                   "method=prefork",
-                   "daemonize=False",
-                   "maxchildren=2",
-                   "maxspare=2")
 
 def main():
     """main routine."""
 
     import optparse
-
-    def get_module_directory(module_name):
-        """Find the filesystem directory where a module lives."""
-
-        try:
-            __import__(module_name)
-            app_dir = os.path.dirname(sys.modules[module_name].__file__)
-            return app_dir
-        except ImportError, ex:
-            print >> sys.stderr, ex
-            print >> sys.stderr, "Cannot find settings module " + settings
-            sys.exit(1)
+    import subprocess
 
     default_host = "localhost"
     

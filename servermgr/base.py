@@ -107,12 +107,60 @@ def address_free_check(host, port):
     if address_in_use(host, port):
         raise WorkerError(None, "address already in use", host, port)
 
+
+class BaseProcess(object):
+    """
+    Base class for class wrapper functionality 
+    used by SubprocessWrapper and MultiprocessingWrapper.
+    """
+    def __init__(self, process_thing):
+        self.process = process_thing
+
+    def __getattr__(self, attrib):
+        return getattr(self.process, attrib)
+
+class SubprocessWrapper(BaseProcess):
+    """
+    This class is a wrapper around subprocess.Popen to unify the interface 
+    with multiprocssing.Process.
+    """
+    def join(self, _unused_timeout=None):
+        """Add join method to subprocess.Popen."""
+        self.process.wait()
+
+
+class MultiprocessingWrapper(BaseProcess):
+    """
+    This class is a wrapper around multiprocessing.Process to unify the interface 
+    with subprocess.Popen.
+    """
+
+    def wait(self):
+        """Add wait method to multiprocessing.Process."""
+        return self.process.join(None)
+
+    def poll(self):
+        """Add poll method to multiprocessing.Process."""
+        if self.process.is_alive():
+            return None
+        return True
+
+def wrap_process(process_thing):
+    """Wrap the (Popen, Process) in the proper wrapper to provide uniform functionality."""
+
+    if hasattr(process_thing, "wait"):
+        obj = SubprocessWrapper(process_thing)
+    else:
+        obj = MultiprocessingWrapper(process_thing)
+    return obj
+
+        
 #pylint: disable=R0922
 #abstract class only referenced one time;
-class ManagerBase(object):
+class Manager(object):
     """
     :param name: Name of manager, displayed in error and log messages.
-    :keyword process_name: the string to be displayed by the 'ps command.
+    :param kwargs: Any other keyword args will be stored in self.kwargs.
 
     This is the base implementation of the Manager class.
     
@@ -128,15 +176,27 @@ class ManagerBase(object):
     * start()
     """
 
-    def __init__(self, name, process_name=None):
+    def __init__(self, name="<unnamed>", **kwargs):
         """Initialize the Manager object."""
-        self.process = None
+        self._process = None
         self.name = name
-        self.process_name = process_name
+        self.kwargs = kwargs
 
     def __del__(self):
 
         self.stop()
+
+    @property
+    def process(self):
+        "Return the process object."
+
+        return self._process
+
+    @process.setter
+    def process(self, process):
+        "Wrap the (subprocess.Popen, multiprocessing.Process) with a proxy class."
+
+        self._process = wrap_process(process) if process else None
 
     def health(self):
         """Check the worker subprocess health.
@@ -152,7 +212,6 @@ class ManagerBase(object):
         :raises: **NotImplementedError** must be implemented by subclass.
         """
         raise NotImplementedError        
-
 
     def ready_wait(self, timeout=10.0, verbose=False):
         """Wait until the worker subprocess is responding to requests.
@@ -191,7 +250,7 @@ class ManagerBase(object):
             status = self.process.poll()
 
         errors = None
-        if hasattr(self.process, "stderr"):
+        if hasattr(self.process, "stderr") and self.process.stderr:
             errors = self.process.stderr.read()
         self.process = None
         raise WorkerError(self.name, errors)
@@ -218,4 +277,3 @@ class ManagerBase(object):
         if self.process:
             self.process.wait()
             self.process = None
-

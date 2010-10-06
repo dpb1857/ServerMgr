@@ -8,14 +8,16 @@ Pyro module management.
 Use this module to manage a Pyro name server.
 """
 
-import os
+import copy
 import subprocess
+import os
 import sys
 
-import base
-import my_setproctitle
+import Pyro.naming
 
-class Manager(base.ManagerBase):
+import base
+
+class Manager(base.Manager):
     """Pyro manager object.
 
     :param host: the interface to listen on.
@@ -28,13 +30,14 @@ class Manager(base.ManagerBase):
 
     __implements__ = base.ManagerInterface
 
-    def __init__(self, host, port, data_dir, *args, **kwargs):
+    def __init__(self, host, port, data_dir, name="pyro_ns", process_name="Pyro NameServer", **kwargs):
         
-        super(Manager, self).__init__("Pyro", *args, **kwargs)
+        super(Manager, self).__init__(name=name, **kwargs)
 
         self.host = host
         self.port = port
         self.data_dir = data_dir
+        self.process_name = process_name
 
     def health(self):
         """
@@ -42,9 +45,6 @@ class Manager(base.ManagerBase):
 
         :raises: **base.WorkerError** if we cannot locate the Pyro name server.
         """
-        
-        import Pyro.naming
-
         try:
             Pyro.naming.NameServerLocator().getNS(host=self.host, port=self.port)
         except Pyro.errors.PyroError, ex:
@@ -59,36 +59,19 @@ class Manager(base.ManagerBase):
         :type timeout: float, number of seconds
         :raises: **base.WorkerError** if the worker hasn't started before timeout elapses.
         """
+        env = copy.copy(os.environ)
+        env["PYRO_STORAGE"] = self.data_dir
 
-        os.environ["PYRO_STORAGE"] = self.data_dir
-        launch_prog = '\n'.join(
-            ["""from servermgr import pyro;"""
-             """pyro.Manager.launch(host="%s", port=%d, process_name="%s")"""
-             ]) % (self.host, self.port, self.process_name)
-
-        self.process = subprocess.Popen(["python", "-c", launch_prog])
+        # Note: Can't set the ps display unless we write a custom pyro-ns script;
+        process = subprocess.Popen(["pyro-ns",
+                                    "-n", self.host,
+                                    "-p", str(self.port),
+                                    "-d"],
+                                   env=env)
+        self.process = process
 
         if wait:
             self.ready_wait(timeout=timeout)
-
-    @staticmethod
-    def launch(**kwargs):
-        """
-        Launch the Pyro nameserver in a fresh python environment.
-
-        :param host:   the nameserver host
-        :param port:   the nameserver port
-        :type port: int
-        :param process_name: the displayed program name;
-        """
-
-        pname = kwargs.get("process_name", None)
-        if pname:
-            my_setproctitle.setproctitle(pname)
-
-        import Pyro.naming
-        Pyro.naming.main(["-n", kwargs["host"], "-p", kwargs["port"], "-d"])
-
 
 def interrupt(_unused_signum, _unused_frame):
     """Handle user stopping with control-C."""

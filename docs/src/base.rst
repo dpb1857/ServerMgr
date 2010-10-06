@@ -23,5 +23,5 @@ Utility Functions
 Classes
 -------
 
-.. autoclass:: ManagerBase
+.. autoclass:: Manager
    :members:

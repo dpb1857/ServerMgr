@@ -105,7 +105,7 @@ def _initialize_directory(directory, pg_version):
 
     return messages
 
-class Manager(base.ManagerBase):
+class Manager(base.Manager):
     """
     Postgres manager object.
 

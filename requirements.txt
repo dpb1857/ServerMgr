@@ -1,6 +1,7 @@
 argparse
 django==1.2.3
 flup
+nose
 pylint>=0.21.2
 Pyro==3.10
 setproctitle
