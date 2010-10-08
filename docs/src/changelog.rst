@@ -2,6 +2,11 @@
 ChangeLog
 =========
 
+v0.2.2 10/8/2010
+----------------
+
+Fixed bad MANIFEST file that caused pyro files to be left out.
+
 v0.2.1 10/6/2010
 ----------------
 

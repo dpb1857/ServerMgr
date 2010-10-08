@@ -44,6 +44,7 @@ docs:
 #
 
 dist: docs
+	rm -f MANIFEST && echo "Rebuilding MANIFEST file..."
 	python setup.py sdist
 	cd docs/_build/html && zip -r $(shell pwd)/dist/docs.zip .
 
@@ -79,6 +80,7 @@ clean:
 	rm -rf build
 	rm -f pip-log.txt
 	rm -f pylint.log
+	rm -f MANIFEST
 
 check:
 	-grep -n pdb servermgr/*.py

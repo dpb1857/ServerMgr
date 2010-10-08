@@ -12,4 +12,4 @@ In either of these cases, there is no need to configure multiple programs to run
 you can simply configure the appropriate server manager object and go!
 """
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
