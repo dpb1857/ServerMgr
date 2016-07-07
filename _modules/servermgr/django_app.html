@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>servermgr.django_app &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for servermgr.django_app</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- mode: python; tab-width:8; py-indent-offset:4; indent-tabs-mode:nil -*-</span>
+<span class="c1">#pylint: disable=C0301</span>
+<span class="c1">#line length;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Django process management.</span>
+
+<span class="sd">Use this module to run a django app.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">base</span>
+<span class="kn">import</span> <span class="nn">my_setproctitle</span>
+
+
+<span class="k">def</span> <span class="nf">get_module_directory</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the filesystem directory where a module lives.&quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="n">app_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span><span class="o">.</span><span class="n">__file__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">app_dir</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">ex</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s2">&quot;Cannot find settings module &quot;</span> <span class="o">+</span> <span class="n">module_name</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Manager"><a class="viewcode-back" href="../../django_app.html#servermgr.django_app.Manager">[docs]</a><span class="k">class</span> <span class="nc">Manager</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Django manager object.</span>
+
+<span class="sd">    :param host: the interface to listen on.</span>
+<span class="sd">    :param port: the port to listen on.</span>
+<span class="sd">    :type port: int</span>
+<span class="sd">    :param settings: name of the django settings module</span>
+<span class="sd">    :keyword name: the program name</span>
+<span class="sd">    :keyword process_name: the string to diplay in &#39;ps&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__implements__</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">ManagerInterface</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DjangoApp&quot;</span><span class="p">,</span> <span class="n">process_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Manager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings_dir</span> <span class="o">=</span> <span class="n">get_module_directory</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_name</span> <span class="o">=</span> <span class="n">process_name</span>
+
+<div class="viewcode-block" id="Manager.health"><a class="viewcode-back" href="../../django_app.html#servermgr.django_app.Manager.health">[docs]</a>    <span class="k">def</span> <span class="nf">health</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check the health of the django subprocess.</span>
+
+<span class="sd">        :raises: **base.WorkerError** if we cannot create a socket connection to app.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s__</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">create_connection</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+            <span class="n">s__</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">base</span><span class="o">.</span><span class="n">WorkerError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Manager.start"><a class="viewcode-back" href="../../django_app.html#servermgr.django_app.Manager.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the Django app in its own process.</span>
+
+<span class="sd">        :param wait: If true, call self.ready_wait() after starting the subprocess.</span>
+<span class="sd">        :param timeout: When calling ready_wait(), use this timeout value.</span>
+<span class="sd">        :type timeout: float, number of seconds</span>
+<span class="sd">        :raises: **base.WorkerError** if the worker hasn&#39;t started before timeout elapses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">launch_django</span><span class="p">():</span>
+            <span class="s2">&quot;The Django subprocess.&quot;</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_name</span><span class="p">:</span>
+                <span class="n">my_setproctitle</span><span class="o">.</span><span class="n">setproctitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process_name</span><span class="p">)</span>
+
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_dir</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;DJANGO_SETTINGS_MODULE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+            <span class="kn">from</span> <span class="nn">django.core.management.commands</span> <span class="kn">import</span> <span class="n">runfcgi</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">runfcgi</span><span class="o">.</span><span class="n">Command</span><span class="p">()</span>
+
+            <span class="c1"># XXX We should allow configuration of the options below;</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="s2">&quot;host=&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                       <span class="s2">&quot;port=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span>
+                       <span class="s2">&quot;method=prefork&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;daemonize=False&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;maxchildren=2&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;maxspare=2&quot;</span><span class="p">)</span>
+            
+        <span class="n">process</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">launch_django</span><span class="p">)</span>
+        <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">process</span>        
+
+        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ready_wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../django_app.html#servermgr.django_app.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;main routine.&quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">optparse</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+
+    <span class="n">default_host</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+    
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">optparse</span><span class="o">.</span><span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="s2">&quot;usage: %prog [options]&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-H&quot;</span><span class="p">,</span> <span class="s2">&quot;--host&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;host&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;django app host&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;django app port&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--settings&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Django settings module name&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--fcgi&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;fcgi&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run fcgi subprocess&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="s2">&quot;--name&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;process name&quot;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">_unused_args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">default_port</span> <span class="o">=</span> <span class="mi">8001</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fcgi</span> <span class="k">else</span> <span class="mi">8000</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">host</span> <span class="k">else</span> <span class="n">default_host</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">)</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">port</span> <span class="k">else</span> <span class="n">default_port</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">settings</span>
+    <span class="n">process_name</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fcgi</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s2">&quot;Creating fcgi server on </span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">process_name</span><span class="o">=</span><span class="n">process_name</span><span class="p">)</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s2">&quot;starting server...&quot;</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s2">&quot;server ready.&quot;</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">get_module_directory</span><span class="p">(</span><span class="n">settings</span><span class="p">))</span>
+        <span class="n">subshell</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> 
+                                     <span class="s2">&quot;manage.py&quot;</span><span class="p">,</span> 
+                                     <span class="s2">&quot;runserver&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)],</span>
+                                    <span class="p">)</span>
+        <span class="n">subshell</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

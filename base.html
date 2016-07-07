@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Base &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="index.html" />
+    <link rel="up" title="Managers" href="managers.html" />
+    <link rel="next" title="Nginx" href="nginx.html" />
+    <link rel="prev" title="Managers" href="managers.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="Nginx"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="managers.html" title="Managers"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" accesskey="U">Managers</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-servermgr.base">
+<span id="base"></span><h1>Base<a class="headerlink" href="#module-servermgr.base" title="Permalink to this headline">¶</a></h1>
+<p>Interface definition and base implementation for all subprocess managers.</p>
+<div class="section" id="interface">
+<h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="servermgr.base.ManagerInterface">
+<em class="property">class </em><code class="descclassname">servermgr.base.</code><code class="descname">ManagerInterface</code><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>This abstract class defines the interface implemented by all Managers.</p>
+<dl class="method">
+<dt id="servermgr.base.ManagerInterface.health">
+<code class="descname">health</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface.health"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the health of the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if the worker subprocess is not responding.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.ManagerInterface.ready_wait">
+<code class="descname">ready_wait</code><span class="sig-paren">(</span><em>timeout=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface.ready_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface.ready_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the worker to be ready to handle requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float, seconds</em>) &#8211; Give the server this many seconds to start. If the 
+timeout expires before the server has started, 
+kill the server and raise WorkerError.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if the worker is not ready within the time limit.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.ManagerInterface.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>wait=True</em>, <em>timeout=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wait</strong> &#8211; If true, call self.ready_wait() after starting the subprocess.</li>
+<li><strong>timeout</strong> (<em>float, number of seconds</em>) &#8211; When calling ready_wait(), use this timeout value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.ManagerInterface.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<em>boolean</em>) &#8211; If True, wait for the worker to exit.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.ManagerInterface.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#ManagerInterface.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.ManagerInterface.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the worker process to exit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="servermgr.base.WorkerError">
+<em class="property">exception </em><code class="descclassname">servermgr.base.</code><code class="descname">WorkerError</code><span class="sig-paren">(</span><em>exception</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#WorkerError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.WorkerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception raised when a Worker fails to start 
+or fails to respond.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="servermgr.base.address_in_use">
+<code class="descclassname">servermgr.base.</code><code class="descname">address_in_use</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#address_in_use"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.address_in_use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see if there is a listener on host:port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host</strong> (<em>string</em>) &#8211; the interface to check;</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; the post to check;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>True</strong> if there is a listener, else <strong>False</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="servermgr.base.address_free_check">
+<code class="descclassname">servermgr.base.</code><code class="descname">address_free_check</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#address_free_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.address_free_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise an exception if host:port is in use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host</strong> (<em>string</em>) &#8211; the interface to check;</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; the post to check;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>WorkerError</strong> if the address is in use.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="servermgr.base.Manager">
+<em class="property">class </em><code class="descclassname">servermgr.base.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>name='&lt;unnamed&gt;'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; Name of manager, displayed in error and log messages.</li>
+<li><strong>kwargs</strong> &#8211; Any other keyword args will be stored in self.kwargs.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is the base implementation of the Manager class.</p>
+<p>Implementations are provided for the following methods:</p>
+<ul class="simple">
+<li>ready_wait()</li>
+<li>stop()</li>
+<li>wait()</li>
+</ul>
+<p>The following methods must be implemented by the subclass:</p>
+<ul class="simple">
+<li>health()</li>
+<li>start()</li>
+</ul>
+<dl class="method">
+<dt id="servermgr.base.Manager.health">
+<code class="descname">health</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.health"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the worker subprocess health.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>NotImplementedError</strong> must be implemented by subclass.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="servermgr.base.Manager.process">
+<code class="descname">process</code><a class="headerlink" href="#servermgr.base.Manager.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the process object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.Manager.ready_wait">
+<code class="descname">ready_wait</code><span class="sig-paren">(</span><em>timeout=10.0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.ready_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager.ready_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the worker subprocess is responding to requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float, seconds</em>) &#8211; Give the server this many seconds to start. If the 
+timeout expires before the server has started, 
+kill the server and raise WorkerError.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if the worker is not ready within the time limit.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if there is no subprocess.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.Manager.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>wait=True</em>, <em>timeout=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>NotImplementedError</strong> must be implemented by subclass.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.Manager.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<em>boolean</em>) &#8211; If True, wait for the worker to exit.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.base.Manager.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.base.Manager.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the worker process to exit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Base</a><ul>
+<li><a class="reference internal" href="#interface">Interface</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="managers.html"
+                        title="previous chapter">Managers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nginx.html"
+                        title="next chapter">Nginx</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/base.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nginx.html" title="Nginx"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="managers.html" title="Managers"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" >Managers</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

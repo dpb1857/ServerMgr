@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Django_app &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="index.html" />
+    <link rel="up" title="Managers" href="managers.html" />
+    <link rel="next" title="Pyro_ns" href="pyro_ns.html" />
+    <link rel="prev" title="Postgres" href="postgres.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyro_ns.html" title="Pyro_ns"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="postgres.html" title="Postgres"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" accesskey="U">Managers</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-servermgr.django_app">
+<span id="django-app"></span><h1>Django_app<a class="headerlink" href="#module-servermgr.django_app" title="Permalink to this headline">¶</a></h1>
+<p>Django process management.</p>
+<p>Use this module to run a django app.</p>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="servermgr.django_app.Manager">
+<em class="property">class </em><code class="descclassname">servermgr.django_app.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>settings</em>, <em>name='DjangoApp'</em>, <em>process_name=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/django_app.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Django manager object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> &#8211; the interface to listen on.</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; the port to listen on.</li>
+<li><strong>settings</strong> &#8211; name of the django settings module</li>
+<li><strong>name</strong> &#8211; the program name</li>
+<li><strong>process_name</strong> &#8211; the string to diplay in &#8216;ps&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="servermgr.django_app.Manager.health">
+<code class="descname">health</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/django_app.html#Manager.health"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the health of the django subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>base.WorkerError</strong> if we cannot create a socket connection to app.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="servermgr.django_app.Manager.process">
+<code class="descname">process</code><a class="headerlink" href="#servermgr.django_app.Manager.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the process object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.django_app.Manager.ready_wait">
+<code class="descname">ready_wait</code><span class="sig-paren">(</span><em>timeout=10.0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.ready_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager.ready_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the worker subprocess is responding to requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float, seconds</em>) &#8211; Give the server this many seconds to start. If the 
+timeout expires before the server has started, 
+kill the server and raise WorkerError.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if the worker is not ready within the time limit.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if there is no subprocess.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.django_app.Manager.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>wait=True</em>, <em>timeout=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/django_app.html#Manager.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the Django app in its own process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wait</strong> &#8211; If true, call self.ready_wait() after starting the subprocess.</li>
+<li><strong>timeout</strong> (<em>float, number of seconds</em>) &#8211; When calling ready_wait(), use this timeout value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>base.WorkerError</strong> if the worker hasn&#8217;t started before timeout elapses.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.django_app.Manager.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<em>boolean</em>) &#8211; If True, wait for the worker to exit.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.django_app.Manager.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.Manager.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the worker process to exit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="running-django-app-py">
+<h2>Running django_app.py<a class="headerlink" href="#running-django-app-py" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="servermgr.django_app.main">
+<code class="descclassname">servermgr.django_app.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/django_app.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.django_app.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>main routine.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Django_app</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#running-django-app-py">Running django_app.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="postgres.html"
+                        title="previous chapter">Postgres</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyro_ns.html"
+                        title="next chapter">Pyro_ns</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/django_app.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyro_ns.html" title="Pyro_ns"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="postgres.html" title="Postgres"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" >Managers</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

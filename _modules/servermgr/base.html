@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>servermgr.base &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for servermgr.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- mode: python; tab-width:8; py-indent-offset:4; indent-tabs-mode:nil -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Interface definition and base implementation for all subprocess managers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1">#pylint: disable=R0921</span>
+<span class="c1">#abstract class not implemented;</span>
+
+<div class="viewcode-block" id="ManagerInterface"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface">[docs]</a><span class="k">class</span> <span class="nc">ManagerInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This abstract class defines the interface implemented by all Managers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ManagerInterface.health"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface.health">[docs]</a>    <span class="k">def</span> <span class="nf">health</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check the health of the worker subprocess.</span>
+
+<span class="sd">        :raises: **WorkerError** if the worker subprocess is not responding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="ManagerInterface.start"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the worker subprocess.</span>
+
+<span class="sd">        :param wait: If true, call self.ready_wait() after starting the subprocess.</span>
+<span class="sd">        :param timeout: When calling ready_wait(), use this timeout value.</span>
+<span class="sd">        :type timeout: float, number of seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="ManagerInterface.ready_wait"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface.ready_wait">[docs]</a>    <span class="k">def</span> <span class="nf">ready_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for the worker to be ready to handle requests.</span>
+
+<span class="sd">        :param timeout: Give the server this many seconds to start. If the </span>
+<span class="sd">          timeout expires before the server has started, </span>
+<span class="sd">          kill the server and raise WorkerError.</span>
+<span class="sd">        :type timeout: float, seconds</span>
+<span class="sd">        :raises: **WorkerError** if the worker is not ready within the time limit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="ManagerInterface.stop"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop the worker subprocess.</span>
+<span class="sd">        </span>
+<span class="sd">        :param wait: If True, wait for the worker to exit.</span>
+<span class="sd">        :type wait: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="ManagerInterface.wait"><a class="viewcode-back" href="../../base.html#servermgr.base.ManagerInterface.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait for the worker process to exit.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<div class="viewcode-block" id="WorkerError"><a class="viewcode-back" href="../../base.html#servermgr.base.WorkerError">[docs]</a><span class="k">class</span> <span class="nc">WorkerError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception raised when a Worker fails to start </span>
+<span class="sd">       or fails to respond.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WorkerError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span>
+        
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">WorkerError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">val</span>
+
+        <span class="k">return</span> <span class="n">val</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="address_in_use"><a class="viewcode-back" href="../../base.html#servermgr.base.address_in_use">[docs]</a><span class="k">def</span> <span class="nf">address_in_use</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check to see if there is a listener on host:port.</span>
+
+<span class="sd">    :param host: the interface to check;</span>
+<span class="sd">    :type host: string</span>
+<span class="sd">    :param port: the post to check;</span>
+<span class="sd">    :type port: int</span>
+<span class="sd">    :returns: **True** if there is a listener, else **False**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s__</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">create_connection</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">s__</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span></div>
+
+<div class="viewcode-block" id="address_free_check"><a class="viewcode-back" href="../../base.html#servermgr.base.address_free_check">[docs]</a><span class="k">def</span> <span class="nf">address_free_check</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise an exception if host:port is in use.</span>
+
+<span class="sd">    :param host: the interface to check;</span>
+<span class="sd">    :type host: string</span>
+<span class="sd">    :param port: the post to check;</span>
+<span class="sd">    :type port: int</span>
+
+<span class="sd">    :raises: **WorkerError** if the address is in use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">address_in_use</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">WorkerError</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;address already in use&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">BaseProcess</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for class wrapper functionality </span>
+<span class="sd">    used by SubprocessWrapper and MultiprocessingWrapper.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process_thing</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">process_thing</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SubprocessWrapper</span><span class="p">(</span><span class="n">BaseProcess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a wrapper around subprocess.Popen to unify the interface </span>
+<span class="sd">    with multiprocssing.Process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_unused_timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add join method to subprocess.Popen.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">MultiprocessingWrapper</span><span class="p">(</span><span class="n">BaseProcess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a wrapper around multiprocessing.Process to unify the interface </span>
+<span class="sd">    with subprocess.Popen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add wait method to multiprocessing.Process.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add poll method to multiprocessing.Process.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">def</span> <span class="nf">wrap_process</span><span class="p">(</span><span class="n">process_thing</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap the (Popen, Process) in the proper wrapper to provide uniform functionality.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">process_thing</span><span class="p">,</span> <span class="s2">&quot;wait&quot;</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">SubprocessWrapper</span><span class="p">(</span><span class="n">process_thing</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">MultiprocessingWrapper</span><span class="p">(</span><span class="n">process_thing</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span>
+
+        
+<span class="c1">#pylint: disable=R0922</span>
+<span class="c1">#abstract class only referenced one time;</span>
+<div class="viewcode-block" id="Manager"><a class="viewcode-back" href="../../base.html#servermgr.base.Manager">[docs]</a><span class="k">class</span> <span class="nc">Manager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param name: Name of manager, displayed in error and log messages.</span>
+<span class="sd">    :param kwargs: Any other keyword args will be stored in self.kwargs.</span>
+
+<span class="sd">    This is the base implementation of the Manager class.</span>
+<span class="sd">    </span>
+<span class="sd">    Implementations are provided for the following methods:</span>
+
+<span class="sd">    * ready_wait()</span>
+<span class="sd">    * stop()</span>
+<span class="sd">    * wait()</span>
+<span class="sd">    </span>
+<span class="sd">    The following methods must be implemented by the subclass:</span>
+
+<span class="sd">    * health()</span>
+<span class="sd">    * start()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;unnamed&gt;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Manager object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Return the process object.&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span>
+
+    <span class="nd">@process.setter</span>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">):</span>
+        <span class="s2">&quot;Wrap the (subprocess.Popen, multiprocessing.Process) with a proxy class.&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="n">wrap_process</span><span class="p">(</span><span class="n">process</span><span class="p">)</span> <span class="k">if</span> <span class="n">process</span> <span class="k">else</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="Manager.health"><a class="viewcode-back" href="../../base.html#servermgr.base.Manager.health">[docs]</a>    <span class="k">def</span> <span class="nf">health</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the worker subprocess health.</span>
+
+<span class="sd">        :raises: **NotImplementedError** must be implemented by subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Manager.start"><a class="viewcode-back" href="../../base.html#servermgr.base.Manager.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the worker subprocess.</span>
+
+<span class="sd">        :raises: **NotImplementedError** must be implemented by subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>        </div>
+
+<div class="viewcode-block" id="Manager.ready_wait"><a class="viewcode-back" href="../../nginx.html#servermgr.base.Manager.ready_wait">[docs]</a>    <span class="k">def</span> <span class="nf">ready_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait until the worker subprocess is responding to requests.</span>
+
+<span class="sd">        :param timeout: Give the server this many seconds to start. If the </span>
+<span class="sd">          timeout expires before the server has started, </span>
+<span class="sd">          kill the server and raise WorkerError.</span>
+<span class="sd">        :type timeout: float, seconds</span>
+<span class="sd">        :raises: **WorkerError** if the worker is not ready within the time limit.</span>
+<span class="sd">        :raises: **WorkerError** if there is no subprocess.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WorkerError</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; No subprocess&quot;</span><span class="p">)</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time_delta</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">status</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># status == None =&gt; process is running;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">health</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="s2">&quot;server </span><span class="si">%s</span><span class="s2"> is ready.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">WorkerError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="n">WorkerError</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; Taking too long to start.&quot;</span><span class="p">)</span>
+            
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">time_delta</span><span class="p">)</span>
+
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+
+        <span class="n">errors</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s2">&quot;stderr&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="p">:</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">raise</span> <span class="n">WorkerError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Manager.stop"><a class="viewcode-back" href="../../nginx.html#servermgr.base.Manager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Terminate the worker subprocess.</span>
+<span class="sd">        </span>
+<span class="sd">        :param wait: If True, wait for the worker to exit.</span>
+<span class="sd">        :type wait: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="Manager.wait"><a class="viewcode-back" href="../../nginx.html#servermgr.base.Manager.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wait for the worker process to exit.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ChangeLog &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="index.html" />
+    <link rel="prev" title="Hello_server.py" href="example_hello_server.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_hello_server.html" title="Hello_server.py"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="changelog">
+<h1>ChangeLog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="v0-2-2-10-8-2010">
+<h2>v0.2.2 10/8/2010<a class="headerlink" href="#v0-2-2-10-8-2010" title="Permalink to this headline">¶</a></h2>
+<p>Fixed bad MANIFEST file that caused pyro files to be left out.</p>
+</div>
+<div class="section" id="v0-2-1-10-6-2010">
+<h2>v0.2.1 10/6/2010<a class="headerlink" href="#v0-2-1-10-6-2010" title="Permalink to this headline">¶</a></h2>
+<p>Use muliprocessing module when launching python in its own process.</p>
+<ul class="simple">
+<li>Use multiprocessing to launch Django_app and Pyro_service.</li>
+<li>Wrap the subprocess.Popen and multiprocessing.Subprocess objects in another class to provide a common API.</li>
+<li>Renamed base.ManagerBase -&gt; base.Manager.</li>
+<li>Add tests for nginx and pyro.</li>
+<li>Update docs.</li>
+</ul>
+</div>
+<div class="section" id="v0-2-0-9-28-2010">
+<h2>v0.2.0 9/28/2010<a class="headerlink" href="#v0-2-0-9-28-2010" title="Permalink to this headline">¶</a></h2>
+<p>initial public release</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ChangeLog</a><ul>
+<li><a class="reference internal" href="#v0-2-2-10-8-2010">v0.2.2 10/8/2010</a></li>
+<li><a class="reference internal" href="#v0-2-1-10-6-2010">v0.2.1 10/6/2010</a></li>
+<li><a class="reference internal" href="#v0-2-0-9-28-2010">v0.2.0 9/28/2010</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example_hello_server.html"
+                        title="previous chapter">Hello_server.py</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/changelog.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_hello_server.html" title="Hello_server.py"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

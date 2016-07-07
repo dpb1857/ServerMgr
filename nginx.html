@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nginx &mdash; ServerMgr 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ServerMgr 0.2.1 documentation" href="index.html" />
+    <link rel="up" title="Managers" href="managers.html" />
+    <link rel="next" title="Postgres" href="postgres.html" />
+    <link rel="prev" title="Base" href="base.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="postgres.html" title="Postgres"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="Base"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" accesskey="U">Managers</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-servermgr.nginx">
+<span id="nginx"></span><h1>Nginx<a class="headerlink" href="#module-servermgr.nginx" title="Permalink to this headline">¶</a></h1>
+<p>Nginx process management.</p>
+<p>Use this module to configure and manage a dedicated nginx server.</p>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="servermgr.nginx.Manager">
+<em class="property">class </em><code class="descclassname">servermgr.nginx.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>base_dir</em>, <em>http_root=''</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nginx manager object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<em>string</em>) &#8211; the interface to listen on.</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; the post to listen on.</li>
+<li><strong>base_dir</strong> (<em>string</em>) &#8211; the base directory for logs and configuration files.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="servermgr.nginx.Manager.add_fastcgi_mapping">
+<code class="descname">add_fastcgi_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#servermgr.nginx.Manager.add_fastcgi_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward requests matching <em>url_prefix</em> to the fastcgi server at <em>destination</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>destination</strong> (<em>string</em>) &#8211; destination</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.add_filesystem_mapping">
+<code class="descname">add_filesystem_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>directory</em><span class="sig-paren">)</span><a class="headerlink" href="#servermgr.nginx.Manager.add_filesystem_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a mapping from a URL prefix to a filesystem location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>directory</strong> &#8211; directory name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.add_http_mapping">
+<code class="descname">add_http_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#servermgr.nginx.Manager.add_http_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Act as a reverse proxy, sending URLs matching <em>url_prefix</em> to <em>destination</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>destination</strong> (<em>string</em>) &#8211; destination http server</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.add_redirect_mapping">
+<code class="descname">add_redirect_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>pattern</em>, <em>rewrite</em><span class="sig-paren">)</span><a class="headerlink" href="#servermgr.nginx.Manager.add_redirect_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>URLs that have the prefix <em>prefix</em> are then matched against the regular expression <em>pattern</em> and 
+rewritten using <em>destination</em>, which may use matched subexpressions from <em>pattern</em>.
+See <a class="reference external" href="http://wiki.nginx.org/NginxHttpRewriteModule#Directives">Nginx Rewrite Module</a> for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>pattern</strong> (<em>string, regular expression</em>) &#8211; the re pattern to match against</li>
+<li><strong>rewrite</strong> (<em>string</em>) &#8211; the rewrite pattern, which may include matched patterns from <em>pattern</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.health">
+<code class="descname">health</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#Manager.health"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check on the health of the Solr server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>base.WorkerError</strong> if the server is not responding.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="servermgr.nginx.Manager.process">
+<code class="descname">process</code><a class="headerlink" href="#servermgr.nginx.Manager.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the process object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.ready_wait">
+<code class="descname">ready_wait</code><span class="sig-paren">(</span><em>timeout=10.0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.ready_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager.ready_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the worker subprocess is responding to requests.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float, seconds</em>) &#8211; Give the server this many seconds to start. If the 
+timeout expires before the server has started, 
+kill the server and raise WorkerError.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if the worker is not ready within the time limit.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>WorkerError</strong> if there is no subprocess.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>wait=True</em>, <em>timeout=10.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#Manager.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the http server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wait</strong> &#8211; If true, call self.ready_wait() after starting the subprocess.</li>
+<li><strong>timeout</strong> (<em>float, number of seconds</em>) &#8211; When calling ready_wait(), use this timeout value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>base.WorkerError</strong> if the worker hasn&#8217;t started before timeout elapses.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>wait=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate the worker subprocess.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wait</strong> (<em>boolean</em>) &#8211; If True, wait for the worker to exit.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx.Manager.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/base.html#Manager.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.Manager.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the worker process to exit.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="private-classes">
+<h2>Private Classes<a class="headerlink" href="#private-classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="servermgr.nginx._ConfigBuilder">
+<em class="property">class </em><code class="descclassname">servermgr.nginx.</code><code class="descname">_ConfigBuilder</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>base_dir</em>, <em>http_root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#_ConfigBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx._ConfigBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nginx configuration file builder.</p>
+<p>This mixin class provides the methods that can be used to add various types of URL 
+mappings to an Nginx config file.</p>
+<dl class="method">
+<dt id="servermgr.nginx._ConfigBuilder.add_fastcgi_mapping">
+<code class="descname">add_fastcgi_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#_ConfigBuilder.add_fastcgi_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx._ConfigBuilder.add_fastcgi_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward requests matching <em>url_prefix</em> to the fastcgi server at <em>destination</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>destination</strong> (<em>string</em>) &#8211; destination</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx._ConfigBuilder.add_filesystem_mapping">
+<code class="descname">add_filesystem_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#_ConfigBuilder.add_filesystem_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx._ConfigBuilder.add_filesystem_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a mapping from a URL prefix to a filesystem location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>directory</strong> &#8211; directory name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx._ConfigBuilder.add_http_mapping">
+<code class="descname">add_http_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#_ConfigBuilder.add_http_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx._ConfigBuilder.add_http_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Act as a reverse proxy, sending URLs matching <em>url_prefix</em> to <em>destination</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>destination</strong> (<em>string</em>) &#8211; destination http server</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="servermgr.nginx._ConfigBuilder.add_redirect_mapping">
+<code class="descname">add_redirect_mapping</code><span class="sig-paren">(</span><em>url_prefix</em>, <em>pattern</em>, <em>rewrite</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#_ConfigBuilder.add_redirect_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx._ConfigBuilder.add_redirect_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>URLs that have the prefix <em>prefix</em> are then matched against the regular expression <em>pattern</em> and 
+rewritten using <em>destination</em>, which may use matched subexpressions from <em>pattern</em>.
+See <a class="reference external" href="http://wiki.nginx.org/NginxHttpRewriteModule#Directives">Nginx Rewrite Module</a> for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url_prefix</strong> (<em>string</em>) &#8211; url prefix.</li>
+<li><strong>pattern</strong> (<em>string, regular expression</em>) &#8211; the re pattern to match against</li>
+<li><strong>rewrite</strong> (<em>string</em>) &#8211; the rewrite pattern, which may include matched patterns from <em>pattern</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="running-nginx-py">
+<h2>Running nginx.py<a class="headerlink" href="#running-nginx-py" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="servermgr.nginx.main">
+<code class="descclassname">servermgr.nginx.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/servermgr/nginx.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#servermgr.nginx.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>You can use this script to start a copy of Nginx.</p>
+<p>Usage: nginx.py [&#8211;help] [-h HOST] [-p PORT] [-d DATADIR] [-f FSMAP] [-r REDIRECT] [-c FCGI] [-t HTTP]</p>
+<dl class="docutils">
+<dt>optional arguments:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--help</span></kbd></td>
+<td>show this help message and exit</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-h <var>HOST</var></span>, <span class="option">--host=<var>HOST</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>listener hostname</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-p <var>PORT</var></span>, <span class="option">--port=<var>PORT</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>listener port</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-d <var>DATADIR</var></span>, <span class="option">--datadir=<var>DATADIR</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>data directory</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--fsmap <var>FSMAP</var></span></kbd></td>
+<td>add a filesystem mapping</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--redirect <var>REDIRECT</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>add a redirect</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--fcgi <var>FCGI</var></span></kbd></td>
+<td>add a fastcgi mapping</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--http <var>HTTP</var></span></kbd></td>
+<td>add a http mapping</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--config</span></kbd></td>
+<td>print the generated config file and exit</td></tr>
+</tbody>
+</table>
+</dd>
+<dt>To specify a filesystem mapping, use the option:</dt>
+<dd>&#8211;fsmap=/some_url_prefix,/somedirectory</dd>
+<dt>To map a url prefix to a webapp using fcgi, use:</dt>
+<dd>&#8211;fcgi=/some_url_prefix,host:port</dd>
+<dt>To make a url prefix a reverse proxy for another http server, use:</dt>
+<dd>&#8211;http=/url_prefix,some_other_url</dd>
+<dt>To make a url redirect elsewhere:</dt>
+<dd>&#8211;redirect=/url_prefix,pattern,rewrite</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nginx</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#private-classes">Private Classes</a></li>
+<li><a class="reference internal" href="#running-nginx-py">Running nginx.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="base.html"
+                        title="previous chapter">Base</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="postgres.html"
+                        title="next chapter">Postgres</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/nginx.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="postgres.html" title="Postgres"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="Base"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ServerMgr 0.2.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="managers.html" >Managers</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Don Bennett.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>
