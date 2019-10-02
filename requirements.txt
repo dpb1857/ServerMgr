@@ -3,6 +3,6 @@ django==1.2.3
 flup
 nose
 pylint>=0.21.2
-Pyro==3.10
+Pyro==3.15
 setproctitle
 sphinx>=1.0
