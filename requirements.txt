@@ -1,5 +1,5 @@
 argparse
-django==1.2.3
+django==1.11.23
 flup
 nose
 pylint>=0.21.2
